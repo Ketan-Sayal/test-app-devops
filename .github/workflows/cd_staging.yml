@@ -13,9 +13,9 @@ jobs:
       - name: Deploy via SSH
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
-          chmod 600 ssh_key
+          chmod 700 ssh_key
 
-          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@54.160.182.214 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@54.91.77.197 << 'EOF'
             cd ~/test-app-devops
             git pull origin main
 

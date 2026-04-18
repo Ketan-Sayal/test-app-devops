@@ -15,7 +15,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 700 ssh_key
 
-          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@18.234.46.231 << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@98.81.238.194 << 'EOF'
             cd ~/test-app-devops
             git pull origin main
 
