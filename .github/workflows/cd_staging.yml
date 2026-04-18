@@ -17,7 +17,8 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@54.91.77.197 -t "cd ~/test-app-devops &&
             git pull origin main &&
-            
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && source ~/.bashrc &&
+            nvm install --lts &&
             npm i -g pnpm && npm i -g pm2 &&
             pnpm install &&
             pnpm build &&
