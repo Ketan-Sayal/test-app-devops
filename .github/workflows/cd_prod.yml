@@ -5,6 +5,7 @@ on:
       - main
 jobs:
   redeploy_everything:
+    runs-on: ubuntu-latest
     name: Deploy frontend to staging
     steps:
       - name: SSH into the machine
@@ -16,4 +17,3 @@ jobs:
           pnpm install
           pnpm build
           pm2 restart all
-          
