@@ -1,4 +1,4 @@
-name: Deploy to staging
+name: Deploy to production
 
 on:
   push:
@@ -15,13 +15,21 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
           chmod 700 ssh_key
 
-          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@98.81.238.194 -t "cd ~/test-app-devops &&
+          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@98.81.238.194 "bash -c '
+            # ensure node exists
+            command -v node || (curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash - && sudo apt install -y nodejs)
+
+            # ensure pnpm exists
+            command -v pnpm || npm install -g pnpm
+
+            # ensure pm2 exists
+            command -v pm2 || npm install -g pm2
+
+            cd ~/test-app-devops &&
             git pull origin main &&
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && source ~/.bashrc &&
-            nvm install --lts &&
-            npm i -g pnpm && npm i -g pm2 &&
+
             pnpm install &&
             pnpm build &&
 
-            pm2 restart all || pm2 start pnpm --name http-server -- run dev"
-            "
+            pm2 restart all || pm2 start pnpm --name http-server -- run dev
+          '"
