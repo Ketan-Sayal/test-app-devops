@@ -13,14 +13,15 @@ jobs:
       - name: Deploy via SSH
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
-          chmod 600 ssh_key
+          chmod 700 ssh_key
 
-          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@98.81.238.194 "bash -l -c '
-            cd ~/test-app-devops &&
+          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@98.81.238.194 -t "cd ~/test-app-devops &&
             git pull origin main &&
-
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash && source ~/.bashrc &&
+            nvm install --lts &&
+            npm i -g pnpm && npm i -g pm2 &&
             pnpm install &&
             pnpm build &&
 
-            pm2 restart all || pm2 start pnpm --name http-server -- run dev
-          '"
+            pm2 restart all || pm2 start pnpm --name http-server -- run dev"
+            "
