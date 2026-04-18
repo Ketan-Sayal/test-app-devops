@@ -1,26 +1,13 @@
-name: Deploy to staging
+run: |
+  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
+  chmod 600 ssh_key
 
-on:
-  push:
-    branches:
-      - main
+  ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@54.91.77.197 "bash -l -c '
+    cd ~/test-app-devops &&
+    git pull origin main &&
 
-jobs:
-  redeploy_everything:
-    runs-on: ubuntu-latest
+    pnpm install &&
+    pnpm build &&
 
-    steps:
-      - name: Deploy via SSH
-        run: |
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ssh_key
-          chmod 700 ssh_key
-
-          ssh -o StrictHostKeyChecking=no -i ssh_key ubuntu@54.91.77.197 << 'EOF'
-            cd ~/test-app-devops
-            git pull origin main
-
-            pnpm install
-            pnpm build
-
-            pm2 restart all
-          EOF
+    pm2 restart all || pm2 start pnpm --name http-server -- run dev
+  '"
