@@ -11,7 +11,7 @@ jobs:
       - run: |
           echo "{{ secrets.SSH_PRIVATE_KEY}}" > ~/ssh_key
           chmod 600 ~/ssh_key
-          ssh -i ssh_key ubuntu@54.160.182.214
+          echo "yes" | ssh -i ssh_key ubuntu@54.160.182.214
           cd test-app-devops && git pull
           pnpm install
           pnpm build
